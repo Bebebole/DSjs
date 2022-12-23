@@ -200,7 +200,7 @@ async function tryLoadROM(file) {
 
 function downloadAndLoadROM(locationHash) {
 
-    showMsg('Downloading '+ locationHash + '. Please do not clos/reload the page')
+    showMsg('Downloading '+ locationHash + '. Please do not close/reload the page')
 
     if (games.indexOf(locationHash) > -1) {
 
