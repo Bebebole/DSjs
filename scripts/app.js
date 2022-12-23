@@ -99,9 +99,15 @@ function callPlugin(type, arg) {
 function showMsg(msg) {
     document.getElementById('msg-text').innerText = msg
     document.getElementById('msg-layer').hidden = false
-    setTimeout(function () {
-        document.getElementById('msg-layer').hidden = true
-    }, 3500)
+    if (msg.indexOf("%") > -1) {
+        setTimeout(function () {
+            document.getElementById('msg-layer').hidden = true
+        }, 1000)
+    } else {
+        setTimeout(function () {
+            document.getElementById('msg-layer').hidden = true
+        }, 3500)
+    }
 }
 
 function emuRunFrame() {
@@ -230,6 +236,10 @@ function downloadAndLoadROM(locationHash) {
                     }
                     };
                     xhr.responseType = "arraybuffer";
+                    xhr.onprogress = function(event) {
+                        progress = (event.loaded / event.total) * 100;
+                        showMsg(`Download progress: ${progress}%`);
+                    };
 
                 if (!gamesDownloadLink[locationHash]) {
 
