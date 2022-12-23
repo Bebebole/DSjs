@@ -91,7 +91,7 @@ function showMsg(msg) {
     document.getElementById('msg-layer').hidden = false
     setTimeout(function () {
         document.getElementById('msg-layer').hidden = true
-    }, 1000)
+    }, 3500)
 }
 
 function emuRunFrame() {
@@ -200,7 +200,7 @@ async function tryLoadROM(file) {
 
 function downloadAndLoadROM(locationHash) {
 
-    showMsg('Downloading '+ locationHash)
+    showMsg('Downloading '+ locationHash + '. Please do not clos/reload the page')
 
     if (games.indexOf(locationHash) > -1) {
 
