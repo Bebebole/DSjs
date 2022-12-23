@@ -1,0 +1,67 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="css/dark.css" rel="stylesheet">
+    <link href="css/styles.css" rel="stylesheet">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <link rel="apple-touch-icon" href="icon.png">
+    <title>DS Player</title>
+</head>
+
+<body>
+
+    <div id="welcome" class="menu">
+
+        <h1>DS Player</h1>
+
+        <div id="loading">Loading...</div>
+
+        <div id="loadrom" hidden>
+            <input id="rom" type="file">
+        </div>
+
+        <div id="ios-hint" hidden>
+            Due to iOS Safari limitations, you may need to add this page to your home screen before you can save the
+            game.
+            <p style="text-align: center;">⬇</p>
+        </div>
+
+        <ul>
+            <li><a href="./index.html#newmario">New Super Mario Bros</a></li>
+        </ul>
+
+    </div>
+
+    <div id="vk-layer" hidden>
+        <div class="vk-rect vk" data-k="menu" id="vk-menu">Menu</div>
+        <div class="vk-rect vk" data-k="l">L</div>
+        <div class="vk-rect vk" data-k="r">R</div>
+        <div class="vk-round vk" data-k="a">A</div>
+        <div class="vk-round vk" data-k="b">B</div>
+        <div class="vk-round vk" data-k="x">X</div>
+        <div class="vk-round vk" data-k="y">Y</div>
+        <div class="vk-rect vk" data-k="select">-</div>
+        <div class="vk-rect vk" data-k="start">+</div>
+        <div class="vk-round vk" data-k="stick" id="vk-stick"></div>
+    </div>
+
+    <div style="z-index: 2;position: absolute;top: 0px;" id="fps" hidden></div>
+
+    <div id="msg-layer" hidden>
+        <p id="msg-text"></p>
+    </div>
+
+    <canvas id="top" width="256" height="192"></canvas><br>
+    <canvas id="bottom" width="256" height="192"></canvas><br>
+
+    <script src="scripts/localforage.js"></script>
+    <script src="build/nds.js"></script>
+    <script src="scripts/app.js"></script>
+
+</body>
+
+</html>

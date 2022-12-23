@@ -1,0 +1,3 @@
+/home/bebole_c0n3v/desmume-wasm/desmume/wasm-port/build/CMakeFiles/rebuild_cache.dir
+/home/bebole_c0n3v/desmume-wasm/desmume/wasm-port/build/CMakeFiles/edit_cache.dir
+/home/bebole_c0n3v/desmume-wasm/desmume/wasm-port/build/CMakeFiles/nds.dir
