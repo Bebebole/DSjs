@@ -1,6 +1,16 @@
 var games = [
     "newmario",
+    "fifa11",
+    "pkmnheartgold",
+    "pkmnplatine",
+    "pkmnwhite",
 ]
+
+var gamesDownloadLink = {
+    "pkmnheartgold":"https://download947.mediafire.com/kq7j3hyr49wg/rbnqf9j50kiqkxw/pkmnheartgold.nds",
+    "pkmnplatine":"https://download1519.mediafire.com/hr9k9ratdkqg/2kplyck6j7p1xq6/pkmnplatine.nds",
+    "pkmnwhite":"https://download1593.mediafire.com/71cneptfe2zg/yeib6lxkb0fwgio/pkmnwhite.nds",
+}
 
 
 var plugins = {}
@@ -207,7 +217,7 @@ function downloadAndLoadROM(locationHash) {
         localforage.getItem(locationHash).then(function(arrayBuffer) {
 
             if (arrayBuffer === null) {
-                console.log('From GitHub')
+                
                 var xhr = new XMLHttpRequest();
                 xhr.onload = function() {
                     if (xhr.status === 200) {
@@ -218,10 +228,22 @@ function downloadAndLoadROM(locationHash) {
                     } else {
                         console.error('DOWNLOAD ERROR');
                     }
-                };
-                xhr.responseType = "arraybuffer";
-                xhr.open('GET', './roms/' + locationHash + '.nds');
-                xhr.send()
+                    };
+                    xhr.responseType = "arraybuffer";
+
+                if (!gamesDownloadLink[locationHash]) {
+
+                    console.log('From GitHub')
+                    xhr.open('GET', './roms/' + locationHash + '.nds');
+                    xhr.send()
+
+                } else {
+                    
+                    console.log('From Link')
+                    xhr.open('GET', gamesDownloadLink[locationHash]);
+                    xhr.send()
+
+                } 
 
             } else {
 
