@@ -642,7 +642,6 @@ var gamePadKeyMap = {
 function processGamepadInput() {
     if (currentConnectedGamepad < 0) {
         return
-        
     }
     var gamepad = navigator.getGamepads()[currentConnectedGamepad]
     if (!gamepad) {
