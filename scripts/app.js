@@ -214,106 +214,67 @@ async function tryLoadROM(file) {
     callPlugin('loaded', gameID)
 }
 
-function downloadAndLoadROM(locationHash) {
-
-    showMsg('Downloading '+ locationHash + '. Please do not close/reload the page')
-
+async function downloadAndLoadROM(locationHash) {
+    showMsg(`Downloading ${locationHash}. Please do not close/reload the page`);
+  
     if (games.indexOf(locationHash) > -1) {
-
-        localforage.getItem(locationHash).then(function(arrayBuffer) {
-
-            if (arrayBuffer === null) {
-                
-                var xhr = new XMLHttpRequest();
-                xhr.onload = function() {
-                    if (xhr.status === 200) {
-                        var data = xhr.response;
-                        localforage.setItem(locationHash, data)
-                        var file = new File([data], locationHash + '.nds', {type: 'application/octet-stream'});
-                        tryLoadROM(file);
-                    } else {
-                        console.error('DOWNLOAD ERROR');
-                    }
-                    };
-                    xhr.responseType = "arraybuffer";
-                    xhr.onprogress = function(event) {
-                        progress = (event.loaded / event.total) * 100;
-                        showMsg(`Download progress: ${progress}%`);
-                    };
-
-                if (!gamesDownloadLink[locationHash]) {
-
-                    console.log('From GitHub')
-                    xhr.open('GET', './roms/' + locationHash + '.nds');
-                    xhr.send()
-
-                } else {
-                    
-                    console.log('From Link')
-                    xhr.open('GET', gamesDownloadLink[locationHash]);
-                    xhr.send()
-
-                } 
-
-            } else {
-
-                localforage.getItem(locationHash).then(function(arrayBuffer) {
-                    console.log('From LocalForage')
-                    var file = new File([arrayBuffer], locationHash + '.nds', {type: 'application/octet-stream'});
-                  
-                    tryLoadROM(file);
-                  });
-            }
+      let arrayBuffer = await localforage.getItem(locationHash);
+      if (arrayBuffer === null) {
+        try {
+          let xhr = new XMLHttpRequest();
+          xhr.responseType = "arraybuffer";
+  
+          xhr.onprogress = function(event) {
+            let progress = (event.loaded / event.total) * 100;
+            showMsg(`Download progress: ${progress}%`);
+          };
+  
+          let url;
+          if (!gamesDownloadLink[locationHash]) {
+            console.log("From GitHub");
+            url = `./roms/${locationHash}.nds`;
+          } else {
+            console.log("From Link");
+            url = gamesDownloadLink[locationHash];
+          }
+  
+          xhr.open("GET", url);
+          xhr.send();
+  
+          let data = await new Promise((resolve, reject) => {
+            xhr.onload = () => {
+              if (xhr.status === 200) {
+                resolve(xhr.response);
+              } else {
+                reject(new Error("DOWNLOAD ERROR"));
+              }
+            };
           });
+  
+          await localforage.setItem(locationHash, data);
+          data = null;
+  
+          let file = new File([data], `${locationHash}.nds`, {
+            type: "application/octet-stream"
+          });
+          tryLoadROM(file);
+          file = null
+        } catch (error) {
+          console.error(error);
+        }
+      } else {
+        let file = new File([arrayBuffer], `${locationHash}.nds`, {
+          type: "application/octet-stream"
+        });
+
+        arrayBuffer = null;
+        tryLoadROM(file);
+        file = null;
+      }
+    } else {
+      alert(`Game Not Found! ${locationHash}`);
     }
-    
-    else {
-        alert('Game Not Found ! ' + locationHash)
-    }
-}
-
-function downloadAndLoadROMekibokis(locationHash) {
-
-    showMsg('Downloading '+ locationHash + '. Please do not close/reload the page')
-
-    if (games.indexOf(locationHash) > -1) {
-        
-        var xhr = new XMLHttpRequest();
-        xhr.onload = function() {
-            if (xhr.status === 200) {
-                var data = xhr.response;
-                localforage.setItem(locationHash, data)
-                var file = new File([data], locationHash + '.nds', {type: 'application/octet-stream'});
-                tryLoadROM(file);
-            } else {
-                console.error('DOWNLOAD ERROR');
-            }
-            };
-            xhr.responseType = "arraybuffer";
-            xhr.onprogress = function(event) {
-                progress = (event.loaded / event.total) * 100;
-                showMsg(`Download progress: ${progress}%`);
-            };
-
-        if (!gamesDownloadLink[locationHash]) {
-
-            console.log('From GitHub')
-            xhr.open('GET', './roms/' + locationHash + '.nds');
-            xhr.send()
-
-        } else {
-            
-            console.log('From Link')
-            xhr.open('GET', gamesDownloadLink[locationHash]);
-            xhr.send()
-
-        }  
-    }
-    
-    else {
-        alert('Game Not Found ! ' + locationHash)
-    }
-}
+  }
 
 
 function initVK() {
@@ -412,7 +373,7 @@ function uiSwitchToMenu() {
 }
 
 fileInput.onchange = async () => {
-    //tryInitSound()
+    tryInitSound()
     var file = fileInput.files[0]
     if (!file) {
         return
@@ -504,7 +465,7 @@ function isPointInRect(x, y, r) {
 }
 
 function handleTouch(event) {
-    //tryInitSound()
+    tryInitSound()
     if (!emuIsRunning) {
         return
     }
@@ -627,7 +588,7 @@ window.onmousedown = window.onmouseup = window.onmousemove = (e) => {
         return
     }
     if (e.type == 'mousedown') {
-        //tryInitSound()
+        tryInitSound()
     }
 
     var r = screenCanvas[1].getBoundingClientRect()
@@ -727,6 +688,6 @@ if (isSaveSupported) {
 }
 
 if (location.hash.substr(1) != '') {
-    //tryInitSound()
-    downloadAndLoadROMekibokis(location.hash.substr(1))
+    tryInitSound()
+    downloadAndLoadROM(location.hash.substr(1))
 }
