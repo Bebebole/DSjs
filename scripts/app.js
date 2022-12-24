@@ -368,10 +368,6 @@ function uiSwitchToPlayer() {
     uiAdjustSize()
 }
 
-function uiSwitchToMenu() {
-
-}
-
 fileInput.onchange = async () => {
     tryInitSound()
     var file = fileInput.files[0]
