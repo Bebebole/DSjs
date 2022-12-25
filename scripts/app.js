@@ -218,64 +218,62 @@ async function downloadAndLoadROM(locationHash) {
     showMsg(`Downloading ${locationHash}. Please do not close/reload the page`);
   
     if (games.indexOf(locationHash) > -1) {
-      let arrayBuffer = await localforage.getItem(locationHash);
-      if (arrayBuffer === null) {
-        try {
-          let xhr = new XMLHttpRequest();
-          xhr.responseType = "arraybuffer";
+        let arrayBuffer = await localforage.getItem(locationHash);
+        if (arrayBuffer === null) {
+            try {
+                let xhr = new XMLHttpRequest();
+                xhr.responseType = "arraybuffer";
   
-          xhr.onprogress = function(event) {
-            let progress = (event.loaded / event.total) * 100;
-            showMsg(`Download progress: ${progress}%`);
-          };
+                xhr.onprogress = function(event) {
+                    let progress = (event.loaded / event.total) * 100;
+                    showMsg(`Download progress: ${progress}%`);
+                };
   
-          let url;
-          if (!gamesDownloadLink[locationHash]) {
-            console.log("From GitHub");
-            url = `./roms/${locationHash}.nds`;
-          } else {
-            console.log("From Link");
-            url = gamesDownloadLink[locationHash];
-          }
+                let url;
+                if (!gamesDownloadLink[locationHash]) {
+                    console.log("From GitHub");
+                    url = `./roms/${locationHash}.nds`;
+                } else {
+                    console.log("From Link");
+                    url = gamesDownloadLink[locationHash];
+                }
   
-          xhr.open("GET", url);
-          xhr.send();
+                xhr.open("GET", url);
+                xhr.send();
   
-          let data = await new Promise((resolve, reject) => {
-            xhr.onload = () => {
-              if (xhr.status === 200) {
-                resolve(xhr.response);
-              } else {
-                reject(new Error("DOWNLOAD ERROR"));
-              }
-            };
-          });
-  
-          await localforage.setItem(locationHash, data);
-          data = null;
-  
-          let file = new File([data], `${locationHash}.nds`, {
-            type: "application/octet-stream"
-          });
-          tryLoadROM(file);
-          file = null
-        } catch (error) {
-          console.error(error);
+                let data = await new Promise((resolve, reject) => {
+                    xhr.onload = () => {
+                        if (xhr.status === 200) {
+                            resolve(xhr.response);
+                        } else {
+                            reject(new Error("DOWNLOAD ERROR"));
+                        }
+                    };
+                });
+          
+          
+                await localforage.setItem(locationHash, data);
+                data = null;
+                xhr = null;
+                window.location.reload();
+
+            } catch (error) {
+                console.error(error);
+            }
+
+        } else {
+            let file = new File([arrayBuffer], `${locationHash}.nds`, {
+                type: "application/octet-stream"
+            });
+
+            arrayBuffer = null;
+            tryLoadROM(file);
+            file = null;
         }
-      } else {
-        let file = new File([arrayBuffer], `${locationHash}.nds`, {
-          type: "application/octet-stream"
-        });
-
-        arrayBuffer = null;
-        tryLoadROM(file);
-        file = null;
-      }
     } else {
-      alert(`Game Not Found! ${locationHash}`);
+        alert(`Game Not Found! ${locationHash}`);
     }
-  }
-
+}
 
 function initVK() {
     var vks = document.getElementsByClassName('vk')
